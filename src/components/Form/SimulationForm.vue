@@ -29,9 +29,7 @@
                :type="cell.type"
                :classProp="'simulation__form__group__item__wrap_input'"
                :validationProp="cell.validation"
-               :value="formdata[idx1].data[idx2].value"
                v-model="formdata[idx1].data[idx2].value"
-               v-on:inputevent='watchInputevent'
               />
               <!-- <input class="simulation__form__group__item__wrap_input"
                 type="text"
@@ -117,10 +115,6 @@ export default Vue.extend({
     log(item: any){
       console.log(item)
     },
-    watchInputevent:function(vals:any){ //直接监听 又子组件触发的事件，参数为子组件的传来的数据
-      console.log("msg:"+this.msg) //结果：这是子组件的数据，将有子组件操作触发传给父组件
-      this.msg = vals
-    } 
   },
   components:{
     InputVue
