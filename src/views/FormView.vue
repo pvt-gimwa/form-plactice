@@ -1,6 +1,6 @@
 <template>
   <div class="about">
-    <h1>ConfirmView.vue</h1>
+    <h1>FormView.vue</h1>
     <SimulationForm 
       :data="formdata"
     />
@@ -13,7 +13,7 @@ import Vue from 'vue';
 import SimulationForm from '@/components/Form/SimulationForm.vue'; // @ is an alias to /src
 
   export default Vue.extend({
-    name: 'ConfirmView',
+    name: 'FormView',
     data(){
       return{
         data: this.formdata
@@ -28,5 +28,5 @@ import SimulationForm from '@/components/Form/SimulationForm.vue'; // @ is an al
       SimulationForm,
     },
   });
-  
+
 </script>
