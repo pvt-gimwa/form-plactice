@@ -18,7 +18,8 @@ const routes: Array<RouteConfig> = [
         component: () => import(/* webpackChunkName: "about" */ '../views/FormView.vue'),
         props: true, // propsを追加
         meta: {
-          isForm: true
+          isForm: true,
+          isConfirm: false
         }
       },
       {
@@ -54,5 +55,12 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 })
+
+// router.beforeEach((to, from, next) => {
+//   if(to.path === "/"){
+//     return next()
+//   }
+//   const data = sessionStorage
+// })
 
 export default router

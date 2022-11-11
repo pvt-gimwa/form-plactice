@@ -1,6 +1,6 @@
 <template>
   <div class="simulation">
-    <form class="simulation__form" v-on:submit="$router.push('/confirm')">
+    <form class="simulation__form" name="simulation__form" @submit.prevent="handleSubmit">
       <div v-for="(item, idx1) in formdata">
         <div class="simulation__form__group">
           <h2 class="simulation__form__group__title">
@@ -9,7 +9,7 @@
           <div class="simulation__form__group__item" v-for='(cell, idx2) in item.data'>
             <!-- タイトル -->
             <div class="simulation__form__group__item__title" >
-              <label class="simulation__form__group__item__title__text">
+              <label class="simulation__form__group__item__title__text" :for="cell.name">
                {{cell.label}}
               </label>
               <span class="simulation__form__group__item__title__tag simulation__form__group__item__title__tag--reg"
@@ -26,22 +26,38 @@
             <!-- 値 -->
             <div class="simulation__form__group__item__wrap">
               <InputVue
+               v-if="cell.type === 'text' || cell.type === 'textarea'"
                :type="cell.type"
+               :name="cell.name"
                :classProp="'simulation__form__group__item__wrap_input'"
                :validationProp="cell.validation"
+               :label="cell.label"
+               :option="cell.option"
+               ref="child"
                v-model="formdata[idx1].data[idx2].value"
               />
-              <!-- <input class="simulation__form__group__item__wrap_input"
-                type="text"
-                v-model="formdata[idx1].data[idx2].value"
-                :name="cell.name"
-                v-if="$route.meta?.isForm"
-              >
-              <p class="simulation__form__group__item__wrap_text"
-               v-if="$route.meta?.isConfirm === true"
-              >
-               {{formdata[idx1].data[idx2].value}}
-              </p> -->
+              <SelectVue
+               v-if="cell.type === 'select'"
+               :type="cell.type"
+               :name="cell.name"
+               :classProp="'simulation__form__group__item__wrap_select'"
+               :validationProp="cell.validation"
+               :label="cell.label"
+               :option="cell.option"
+               ref="child"
+               v-model="formdata[idx1].data[idx2].value"
+              />
+              <DateVue
+               v-if="cell.type === 'date'"
+               :type="cell.type"
+               :name="cell.name"
+               :classProp="'simulation__form__group__item__wrap_select'"
+               :validationProp="cell.validation"
+               :label="cell.label"
+               :option="cell.option"
+               ref="child"
+               v-model="formdata[idx1].data[idx2].value"
+              />
             </div>
           </div>
         </div>
@@ -52,7 +68,7 @@
       >確定</button>
       <button
        v-if="$route.meta?.isConfirm === true"
-        v-on:click="$router.push('/')"
+       @click = "$router.push('/')"
       >戻る</button>
     </form>
   </div>
@@ -61,6 +77,8 @@
 <script lang="ts">
 import Vue,{PropType} from 'vue'
 import InputVue from '@/components/Form/Input.vue'; // @ is an alias to /src
+import SelectVue from '@/components/Form/Select.vue'; // @ is an alias to /src
+import DateVue from './Date.vue';
 
 interface Val{
   required: string
@@ -72,15 +90,24 @@ interface Val{
   textMax: string
   noHyphen: string
   email: string
-  type: string
 }
 
+interface Option {
+  mode: string
+  data: DataList2[]
+}
+
+interface DataList2{
+  [index: number]: string
+}
 interface DataList {
   name: string
   label: string
   value: string
   type: string
   validation: Val
+  option: Option
+
 }
 
 interface FormDataItem {
@@ -95,10 +122,8 @@ interface FormDataType {
 export default Vue.extend({
   name: 'SimulationForm',
   data(){
-    console.log(this.data)
     return {
       formdata:this.data,
-      msg:""
     }
   },
   props:{
@@ -108,16 +133,57 @@ export default Vue.extend({
     }
   },
   mounted(){
-    // console.log(this)
-    // console.log(typeof this.data)
+
+    const allErrorMsg: any[] = [];
+
+    this.check(allErrorMsg)
+
+    if(allErrorMsg.length > 0 && this.$route.meta?.isConfirm === true ){
+      this.$router.push({name: 'form'})
+    }
+
   },
   methods: {
     log(item: any){
       console.log(item)
     },
+    handleSubmit() {
+
+      const allErrorMsg: any[] = [];
+
+      this.check(allErrorMsg)
+
+      if(allErrorMsg.length === 0){
+        this.$router.push({name: 'confirm'})
+      }
+
+    },
+    check(allErrorMsg:any) {
+      (this.$refs.child as any).forEach((input: {
+        [x: string]: any
+        checkString: Function 
+      })=> {
+        input.errorMsg = new Array
+        const _thisVal = input.inputval
+        const _thislabel= input.labeltext
+        const _thisvalidation = input.validatior
+        const _thiskeys = Object.keys(_thisvalidation)
+
+        _thiskeys.forEach((key) => {
+          const msg = input.checkString(_thisVal, key, _thisvalidation[key], _thislabel)
+          msg.length > 0 ? input.errorMsg.push(msg) : null
+        })
+
+        if(input.errorMsg.length > 0){
+          allErrorMsg.push(input.errorMsg)
+        }
+      })
+    }
   },
   components:{
-    InputVue
+    InputVue,
+    SelectVue,
+    DateVue,
   }
 });
 </script>
