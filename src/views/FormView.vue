@@ -1,6 +1,10 @@
 <template>
-  <div class="about">
-    <h1>FormView.vue</h1>
+  <div class="form__input">
+    <div class="form__input__title">
+      <h1>融資可能額シミュレーション</h1>
+      <p>お客様のご属性情報をもとに、フルローンで融資可能額を試算します</p>
+    </div>
+    <hr>
     <SimulationForm 
       :data="formdata"
     />
@@ -30,3 +34,24 @@ import SimulationForm from '@/components/Form/SimulationForm.vue'; // @ is an al
   });
 
 </script>
+
+
+<style lang="scss" scoped>
+.form__input{
+  &__title{
+    text-align: left;
+    padding: 10px 30px;
+    h1 {
+      font-size: 30px;
+      font-weight: bold;
+      margin: 0 0 15px 0;
+      padding: 0;
+    }
+    p {
+      font-size: 18px;
+      margin: 0;
+      padding: 0;
+    }
+  }
+}
+</style>

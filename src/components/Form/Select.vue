@@ -1,22 +1,25 @@
 <template>
   <div :class="className">
-    <select
-     v-if="$route.meta?.isForm"
-     @change="handleChange"
-     class="form__group__item__wrap_select"
-     v-model="inputval"
-    >
-      <option disabled selected value="">選択してください</option>
-      <template
-        v-for=" item in formoption.data"
-      >
-        <option :value="item">
-          {{item}}
-        </option>
+    <div class="form__group__item">
+      <select
+        v-if="$route.meta?.isForm"
+        @change="handleChange"
+        class="form__group__item__wrap__select"
+        v-model="inputval"
+        >
+        <option disabled selected value="">{{labeltext}}を選択してください</option>
+        <template
+          v-for=" item in formoption.data"
+        >
+          <option :value="item">
+            {{item}}
+          </option>
 
-      </template>
-    </select>
-    <div v-if="errorMsg[0].length !== null" v-for="item in errorMsg" class="form__group__item__wrap_input_error">
+        </template>
+      </select>
+      <span class="form__group__item__wrap__icon">▼</span>
+    </div>
+    <div v-if="errorMsg[0].length !== null" v-for="item in errorMsg" class="form__group__item__wrap__input__error">
       <p>{{item}}</p>
     </div>
     <p
@@ -96,3 +99,40 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style lang="scss" scoped>
+.form__group__item{
+  width: 100%;
+  border-bottom: 1px solid #E8E8E8;
+  display: flex;
+  justify-content: flex-start;
+  align-content: center;
+  &__wrap{
+    &__select{
+      width: 100%;
+      font-size: 20px;
+      padding: 5px 0;
+    }
+    &__input{
+      &__error{ 
+        p {
+          font-size: 15px;    
+          color: red;
+          text-align: left;
+        }
+        margin: 10px auto;
+      }
+    }
+    &__icon{
+      display: flex;
+      justify-content: center;
+      align-content: center;
+      height: 35px;
+      line-height: 35px;
+      min-width: 1em;
+      font-size: 13px;
+      color: #0D61D3;
+    }
+  }
+}
+</style>
