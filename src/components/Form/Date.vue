@@ -106,12 +106,6 @@ export default Vue.extend({
       required: true
     }
   },
-  mounted(){
-    // if(this.datedate.year !== ""){
-
-    // }
-    console.log(this.inputval)
-  },
   methods: {
     handleChange: function(event: Event) {
       const target = event.target as HTMLSelectElement      
@@ -137,7 +131,6 @@ export default Vue.extend({
         return false
       }
  
-      // const _thisVal = target.value
       this.datedate.year = target.value
       const monthSelectWrap = target.parentElement?.nextSibling
       const monthSelect = (<Element>monthSelectWrap).querySelector(".form__group__item__wrap_date-month") as HTMLSelectElement
@@ -162,6 +155,7 @@ export default Vue.extend({
       if(this.option.mode === "ym"){
 
         const _thisVal = `${this.datedate.year}-${this.datedate.month}`
+        this.inputval = _thisVal
         this.$emit("input", _thisVal)
 
         keys.forEach((key) => {
@@ -169,7 +163,6 @@ export default Vue.extend({
           msg.length > 0 ? this.errorMsg.push(msg) : null
         })
 
-        // console.log("ym!")
 
       }
 
@@ -202,7 +195,7 @@ export default Vue.extend({
       this.errorMsg = new Array
       const validation = this.validationProp
       const keys = Object.keys(validation)
-
+      this.inputval = _thisVal
       this.$emit("input", _thisVal)
 
       keys.forEach((key) => {

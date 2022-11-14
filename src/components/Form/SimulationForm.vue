@@ -150,7 +150,7 @@ export default Vue.extend({
     },
     handleSubmit() {
 
-      // console.log(this.data)
+      console.log(this.data)
 
       const allErrorMsg: any[] = [];
 
@@ -162,6 +162,9 @@ export default Vue.extend({
 
     }, 
     check(allErrorMsg:any) {
+
+      console.log(this.data);
+
       (this.$refs.child as any).forEach((input: {
         [x: string]: any
         checkString: Function 
