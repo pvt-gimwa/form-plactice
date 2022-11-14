@@ -27,13 +27,13 @@ export default Vue.extend({
             {name: "categoryOfBusiness", label: "業種", value:"", type:"select", option: {mode:"", data:["業種1", "業種2", "業種3", "業種4"]},validation: {required:"true"}},
             {name: "typeOfOccupation", label: "職種", value:"", type:"select", option: {mode:"", data:["職種1", "職種2", "職種3", "職種4"]},validation: {required:"true"}},
             {name: "placeOfEmployment", label: "お勤め先", value:"", type:"text", option: {mode:"", data:[""]},validation: {required:"true",textMax:"100"}},
-            {name: "whenStartedWorking", label: "お勤め開始時期", value:"", type:"date", option: {mode:"dm", data:["2000","2001"]},validation: {required:"true"}},
+            {name: "whenStartedWorking", label: "お勤め開始時期", value:"", type:"date", option: {mode:"ym", data:["2000","2001"]},validation: {required:"true"}},
           ]
         },
         {
           block:"その他",
           data: [
-            {name: "birthday", label: "生年月日", value:"", type:"date", option: {mode:"dmy", data:["1990","1991"]},validation: {required:"true"}},
+            {name: "birthday", label: "生年月日", value:"", type:"date", option: {mode:"ymd", data:["1990","1991"]},validation: {required:"true"}},
             {name: "prefecture", label: "お住まいの都道府県", value:"", type:"select", option: {mode:"", data:["都道府県1", "都道府県2", "都道府県3", "都道府県4"]},validation: {required:"true"}},
           ]
         },

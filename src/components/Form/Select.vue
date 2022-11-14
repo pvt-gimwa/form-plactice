@@ -30,11 +30,11 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import checkValue from './valdator'
 
 export default Vue.extend({
   name: 'SelectVue',
   data(){
-    // console.log(this.value)
     return {
       inputtype: this.type,
       className: this.classProp,
@@ -77,43 +77,21 @@ export default Vue.extend({
     }
   },
   methods: {
-    handleInput: function(event: Event) {
-      const target = event.target as HTMLInputElement
-      this.$emit("input", target.value)
-      // console.log(target.value)
-    },
     handleChange: function(event: Event) {
-      const target = event.target as HTMLInputElement      
+      const target = event.target as HTMLSelectElement      
       const _thisVal = target.value
       const _thislabel= this.label
 
       this.$emit("input", target.value)
-
-      // console.log(target.value)
-      // console.log(target)
 
       this.errorMsg = new Array
       const validation = this.validationProp
       const keys = Object.keys(validation)
 
       keys.forEach((key) => {
-        const msg = this.checkString(_thisVal, key, validation[key], _thislabel)
+        const msg = checkValue(_thisVal, key, validation[key], _thislabel)
         msg.length > 0 ? this.errorMsg.push(msg) : null
       })
-
-    },
-    checkString: function(inputdata: string, key: string, rule: string | object, label:string){
-
-      // console.log(inputdata)
-
-      let errormsg = ""
-
-      if(key === "required"){
-
-        rule === "true" && !inputdata ? errormsg=label+"は必須項目です" : ""
-
-      }
-      return errormsg;
     },
   },
 })

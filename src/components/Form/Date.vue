@@ -1,21 +1,45 @@
-<template>
+<template ref="dateValue">
   <div :class="className">
-    <select
-     v-if="$route.meta?.isForm"
-     @change="handleChange"
-     class="form__group__item__wrap_select"
-     v-model="inputval"
-    >
-      <option disabled selected value="">選択してください</option>
-      <template
-        v-for=" item in formoption.data"
+    <div v-if="$route.meta?.isForm">
+      <select
+       class="form__group__item__wrap_date form__group__item__wrap_date-year"
+       @change="changeYear"
+       v-model="datedate.year"
       >
-        <option :value="item">
-          {{item}}
-        </option>
+        <option disabled selected value="">「年」選択してください</option>
+        <template v-for=" item in selectoption.data" >
+          <option :value="item">
+            {{item}}年
+          </option>
+        </template>
+      </select>
+    </div>
 
-      </template>
-    </select>
+    <div
+     v-if="$route.meta?.isForm && (selectoption.mode === 'ym' || selectoption.mode == 'ymd')"
+    >
+      <select
+       class="form__group__item__wrap_date form__group__item__wrap_date-month"
+       disabled
+       v-model="datedate.month"
+       @change="changeMonth"
+      >
+        <option disabled selected value="">「月」選択してください</option>
+      </select>
+    </div>
+
+    <div v-if="$route.meta?.isForm && selectoption.mode == 'ymd'">
+      <select
+       class="form__group__item__wrap_date form__group__item__wrap_date-day"
+       disabled
+       v-model="datedate.day"
+       @change="changeDay"
+      >
+        <option disabled selected value="">「日」選択してください</option>
+      </select>
+    </div>
+
+
     <div v-if="errorMsg[0].length !== null" v-for="item in errorMsg" class="form__group__item__wrap_input_error">
       <p>{{item}}</p>
     </div>
@@ -30,12 +54,18 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import checkValue from './valdator'
 
 export default Vue.extend({
   name: 'DateVue',
   data(){
-    // console.log(this.value)
+
+    const year = this.value.split("-")[0] || ""
+    const month = this.value.split("-")[1] || ""
+    const day = this.value.split("-")[2] || ""
+
     return {
+      datedate: {year: year, month: month, day: day},
       inputtype: this.type,
       className: this.classProp,
       inputval: this.value,
@@ -43,7 +73,7 @@ export default Vue.extend({
       validatior: this.validationProp,
       labeltext : this.label,
       nametext : this.name,
-      formoption : this.option
+      selectoption : this.option
     }
   },
   props:{
@@ -76,45 +106,111 @@ export default Vue.extend({
       required: true
     }
   },
+  mounted(){
+    // if(this.datedate.year !== ""){
+
+    // }
+    console.log(this.inputval)
+  },
   methods: {
-    handleInput: function(event: Event) {
-      const target = event.target as HTMLInputElement
-      this.$emit("input", target.value)
-      // console.log(target.value)
-    },
     handleChange: function(event: Event) {
-      const target = event.target as HTMLInputElement      
+      const target = event.target as HTMLSelectElement      
       const _thisVal = target.value
       const _thislabel= this.label
 
       this.$emit("input", target.value)
-
-      // console.log(target.value)
-      // console.log(target)
 
       this.errorMsg = new Array
       const validation = this.validationProp
       const keys = Object.keys(validation)
 
       keys.forEach((key) => {
-        const msg = this.checkString(_thisVal, key, validation[key], _thislabel)
+        const msg = checkValue(_thisVal, key, validation[key], _thislabel)
         msg.length > 0 ? this.errorMsg.push(msg) : null
+      })
+    },
+    changeYear: function(event: Event){
+      const target = event.target as HTMLSelectElement     
+      const mode   = this.option.mode === "ym" || this.option.mode === "ymd"
+
+      if(target.disabled === true || mode === false){
+        return false
+      }
+ 
+      // const _thisVal = target.value
+      this.datedate.year = target.value
+      const monthSelectWrap = target.parentElement?.nextSibling
+      const monthSelect = (<Element>monthSelectWrap).querySelector(".form__group__item__wrap_date-month") as HTMLSelectElement
+      const month = Array.from({length:12}, (v,k) => k).map(x => x + 1)
+      month.map(x => {
+        const option = document.createElement("option")
+        option.text = x+"月"
+        option.value = x.toString()
+        monthSelect?.appendChild(option)
+        monthSelect.disabled = false 
+      })
+      
+    },
+    changeMonth: function(event: Event){
+      const target = event.target as HTMLSelectElement      
+      this.datedate.month = target.value
+      const _thislabel= this.label
+      this.errorMsg = new Array
+      const validation = this.validationProp
+      const keys = Object.keys(validation)
+
+      if(this.option.mode === "ym"){
+
+        const _thisVal = `${this.datedate.year}-${this.datedate.month}`
+        this.$emit("input", _thisVal)
+
+        keys.forEach((key) => {
+          const msg = checkValue(_thisVal, key, validation[key], _thislabel)
+          msg.length > 0 ? this.errorMsg.push(msg) : null
+        })
+
+        // console.log("ym!")
+
+      }
+
+      const mode   = this.option.mode === "ymd"
+      if(target.disabled === true || mode === false){
+        return false
+      }
+
+      const selectedMonth = new Date(`${this.datedate.year}-${this.datedate.month}-1`)
+      const nextMonth = new Date(selectedMonth.getFullYear(), selectedMonth.getMonth()+1, 1)
+      const daysMax = Math.round( ( nextMonth.valueOf() - selectedMonth.valueOf() ) / (1000 * 60 * 60 * 24) )
+      const daySelectWrap = target.parentElement?.nextSibling
+      const daySelect = (<Element>daySelectWrap).querySelector(".form__group__item__wrap_date-day") as HTMLSelectElement
+      const days = Array.from({length:daysMax}, (v,k) => k).map(x => x + 1)
+
+      days.map(x => {
+        const option = document.createElement("option")
+        option.text = x+"日"
+        option.value = x.toString()
+        daySelect?.appendChild(option)
+        daySelect.disabled = false 
       })
 
     },
-    checkString: function(inputdata: string, key: string, rule: string | object, label:string){
+    changeDay: function(event: Event){
+      const target = event.target as HTMLSelectElement      
+      this.datedate.day = target.value
+      const _thisVal = `${this.datedate.year}-${this.datedate.month}-${this.datedate.day}`
+      const _thislabel= this.label
+      this.errorMsg = new Array
+      const validation = this.validationProp
+      const keys = Object.keys(validation)
 
-      // console.log(inputdata)
+      this.$emit("input", _thisVal)
 
-      let errormsg = ""
-
-      if(key === "required"){
-
-        rule === "true" && !inputdata ? errormsg=label+"は必須項目です" : ""
-
-      }
-      return errormsg;
+      keys.forEach((key) => {
+        const msg = checkValue(_thisVal, key, validation[key], _thislabel)
+        msg.length > 0 ? this.errorMsg.push(msg) : null
+      })
     },
   },
+
 })
 </script>

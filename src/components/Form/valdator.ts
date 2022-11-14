@@ -1,76 +1,76 @@
-const test = (rule: string, value: string, callback:any ) => {
-  const patter = new RegExp('^1([358][0-9]|4[579]|66|7[0135678]|9[89])[0-9]{8}$')
-  if (!patter.test(value)) {
-    return callback(new Error('请输入正确格式的手机号！'))
-  } else {
-    callback() // 必须有此项回调，否则验证会一直不通过
-  }
+const isString = function(text: unknown): text is string  {
+  return typeof text === "string"
 }
-// 手机号码验证
-const validatePhone = (rule: string, value: string, callback:any ) => {
-    const patter = new RegExp('^1([358][0-9]|4[579]|66|7[0135678]|9[89])[0-9]{8}$')
-    if (!patter.test(value)) {
-      return callback(new Error('请输入正确格式的手机号！'))
-    } else {
-      callback() // 必须有此项回调，否则验证会一直不通过
-    }
-  }
-  // 邮箱的正则
-  const validateEmail = (rule: string, value: string, callback:any ) => {
-    const mailbox = new RegExp('^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$')
-    if (!mailbox.test(value)) {
-      return callback(new Error('请输入正确格式的邮箱！'))
-    } else {
-      callback()
-    }
-  }
-  // 身份证号
-  const validateIdCardNo = (rule: string, value: string, callback:any ) => {
-    const mailbox = new RegExp('^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}[0-9Xx]$')
-    if (!mailbox.test(value)) {
-      return callback(new Error('请输入正确格式的身份证号！'))
-    } else {
-      callback()
-    }
-  }
-  export default {
-    common: {
-      // ---------------------公共验证方法
-      phone: [{// 手机号
-        required: true,
-        message: '手机号不能为空'
-      }, {
-        validator: validatePhone,
-        trigger: 'blur'
-      }],
-      email: [{// 邮箱
-          required: true,
-          message: '邮箱不能为空'
-        },
-        {
-          validator: validateEmail,
-          trigger: 'blur'
-        }
-      ],
-      idCardNo: [{// 身份证号码
-          required: true,
-          message: '身份证号码不能为空'
-        },
-        {
-          validator: validateIdCardNo,
-          trigger: 'blur'
-        }
-      ]
+
+const checkString = function(  inputdata: string,
+  key: string,
+  rule: string | object,
+  label: string
+){
+  let errormsg = ""
+  const length = {
+    max: function(val: string, setVal: string){
+      const intsetVal = (parseInt(setVal)+1)/10000
+      const textsetVal = parseInt(setVal)>=99999999 ? intsetVal.toFixed(4).replace(".0000","")+"億円" : setVal+"万円"
+      const msg = parseInt(val) <= parseInt(setVal) ? ""
+                  :"が"+textsetVal+"を超える場合は、"+setVal+"万円でご入力ください"
+      return msg
     },
-    handle: {
-      // ---------------------处理表单的验证方法
-      operResult: [{//处理结果
-        required: true,
-        message: '请选择处理结果'
-      }],
-      opinion: [{//处理结果描述
-        required: true,
-        message: '请填写处理结果描述'
-      }]
+    min: function(val: string, setVal: string){
+      const msg = parseInt(val) > parseInt(setVal) ? ""
+                  :"が"+setVal+"万円未満の方は、本サービスをお取り扱いできません"
+      return msg
     },
+    textMax: function(val: string, setVal: string){
+      const msg = val.length <= parseInt(setVal) ? ""
+                  :"は"+setVal+"文字以内にしてください"
+      return msg
+    },
+    textMin: function(val: string, setVal: string){
+      const msg = val.length > parseInt(setVal) ? ""
+                  :"は"+setVal+"文字以上でなければなりません"
+      return msg
+    }
   }
+
+  const pattern = {
+    matches: "は半角数字で入力してください",
+    email: "有効なメールアドレスの形式ではないようです",
+  }
+
+  const pattern2 = {
+    noHyphen: "にハイフンは不要です",
+    headZero: "に冒頭の0は不要です",
+  }
+
+  if(key === "required"){
+
+    rule === "true" && !inputdata ? errormsg=label+"は必須項目です" : ""
+
+  }else if(Object.keys(length).includes(key)){
+
+    const re = isString(rule)? rule : ""
+    const msg = length[key as keyof typeof length](inputdata,re)
+    errormsg = msg ? label+msg : ""
+
+  }else{
+
+    const re = isString(rule)? new RegExp(rule) : null
+    if(Object.keys(pattern2).includes(key)){
+      if(re?.test(inputdata)){
+        errormsg = label + pattern[key as keyof typeof pattern]
+      }else{
+        errormsg=""
+      }
+    }else{
+      if(!re?.test(inputdata)){
+        errormsg = key === "email"? pattern[key as keyof typeof pattern] : label + pattern[key as keyof typeof pattern]
+      }else{
+        errormsg=""
+      }
+    }
+  }
+  return errormsg;
+}
+
+export default checkString

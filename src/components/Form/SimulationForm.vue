@@ -79,6 +79,7 @@ import Vue,{PropType} from 'vue'
 import InputVue from '@/components/Form/Input.vue'; // @ is an alias to /src
 import SelectVue from '@/components/Form/Select.vue'; // @ is an alias to /src
 import DateVue from './Date.vue';
+import checkValue from './valdator'
 
 interface Val{
   required: string
@@ -134,12 +135,12 @@ export default Vue.extend({
   },
   mounted(){
 
-    const allErrorMsg: any[] = [];
-
-    this.check(allErrorMsg)
-
-    if(allErrorMsg.length > 0 && this.$route.meta?.isConfirm === true ){
-      this.$router.push({name: 'form'})
+    if(this.$route.meta?.isConfirm === true){
+      const allErrorMsg: any[] = [];
+      this.check(allErrorMsg)
+      if(allErrorMsg.length > 0){
+        this.$router.push({name: 'form'})
+      }
     }
 
   },
@@ -149,6 +150,8 @@ export default Vue.extend({
     },
     handleSubmit() {
 
+      // console.log(this.data)
+
       const allErrorMsg: any[] = [];
 
       this.check(allErrorMsg)
@@ -157,7 +160,7 @@ export default Vue.extend({
         this.$router.push({name: 'confirm'})
       }
 
-    },
+    }, 
     check(allErrorMsg:any) {
       (this.$refs.child as any).forEach((input: {
         [x: string]: any
@@ -170,15 +173,17 @@ export default Vue.extend({
         const _thiskeys = Object.keys(_thisvalidation)
 
         _thiskeys.forEach((key) => {
-          const msg = input.checkString(_thisVal, key, _thisvalidation[key], _thislabel)
+          const msg = checkValue(_thisVal, key, _thisvalidation[key], _thislabel)
           msg.length > 0 ? input.errorMsg.push(msg) : null
         })
 
         if(input.errorMsg.length > 0){
+          console.log(`_thisVal:${_thisVal} ,_thislabel:${_thislabel} ,_thisvalidation:${_thisvalidation} ,_thiskeys:${_thiskeys}`)
           allErrorMsg.push(input.errorMsg)
-        }
+        } 
+
       })
-    }
+    },
   },
   components:{
     InputVue,
