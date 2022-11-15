@@ -98,6 +98,9 @@ export default Vue.extend({
         msg.length > 0 ? this.errorMsg.push(msg) : null
       })
     },
+    clear(){
+      this.$emit("input", "")
+    }
   },
 })
 </script>

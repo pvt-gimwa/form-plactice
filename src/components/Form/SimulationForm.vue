@@ -1,5 +1,8 @@
 <template>
-  <div class="simulation">
+  <div
+   class="simulation"
+   v-show="$route.meta?.isCompleted === false"
+  >
     <form class="simulation__form" name="simulation__form" @submit.prevent="handleSubmit">
       <div v-for="(item, idx1) in formdata" class="simulation__form__group">
         <h2 class="simulation__form__group__title">
@@ -71,11 +74,11 @@
       <button 
        class="simulation__form__button"
        v-if="$route.meta?.isForm === true"
+       @click="checkvalidate"
       >確認画面へ</button>
       <button
        class="simulation__form__button"
        v-if="$route.meta?.isConfirm === true"
-       @click = "$router.push('/')"
       >送信</button>
     </form>
   </div>
@@ -87,6 +90,7 @@ import InputVue from '@/components/Form/Input.vue'; // @ is an alias to /src
 import SelectVue from '@/components/Form/Select.vue'; // @ is an alias to /src
 import DateVue from './Date.vue';
 import checkValue from './valdator'
+import axios from 'axios'
 
 interface Val{
   required: string
@@ -125,7 +129,8 @@ interface FormDataItem {
 }
 
 interface FormDataType {
-  formdata: FormDataItem
+  [index: number]: any
+  formdata: FormDataItem[]
 }
 
 export default Vue.extend({
@@ -149,14 +154,38 @@ export default Vue.extend({
       if(allErrorMsg.length > 0){
         this.$router.push({name: 'form'})
       }
+    }else if(this.$route.meta?.isCompleted === true ){
+      this.clear()
     }
 
   },
   methods: {
-    log(item: any){
-      console.log(item)
-    },
     handleSubmit() {
+
+      if(this.$route.meta?.isConfirm === true){
+
+        const formdata = this.formdata
+        const keys     = Object.keys(formdata)
+        const postdata = new Array
+
+        keys.forEach((key: any) => {
+          const datakeys = Object.keys(formdata[key].data)
+
+          datakeys.forEach((datakey: any) => {
+
+            postdata[this.formdata[key].data[datakey].name] = this.formdata[key].data[datakey].value
+
+          })
+
+        })
+
+        console.log(postdata)
+
+        this.$router.push({name: 'completed'})
+      }      
+
+    }, 
+    checkvalidate(){
 
       const allErrorMsg: any[] = [];
 
@@ -166,12 +195,11 @@ export default Vue.extend({
         this.$router.push({name: 'confirm'})
       }
 
-    }, 
+    },
     check(allErrorMsg:any) {
 
       (this.$refs.child as any).forEach((input: {
         [x: string]: any
-        checkString: Function 
       })=> {
         input.errorMsg = new Array
         const _thisVal = input.inputval
@@ -185,10 +213,17 @@ export default Vue.extend({
         })
 
         if(input.errorMsg.length > 0){
-          console.log(`_thisVal:${_thisVal} ,_thislabel:${_thislabel} ,_thisvalidation:${_thisvalidation} ,_thiskeys:${_thiskeys}`)
           allErrorMsg.push(input.errorMsg)
         } 
 
+      })
+    },
+    clear() {
+      (this.$refs.child as any).forEach((input: {
+        [x: string]: any
+        clear: Function 
+      })=> {
+        input.clear()
       })
     },
   },
