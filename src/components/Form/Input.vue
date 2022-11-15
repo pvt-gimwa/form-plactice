@@ -1,9 +1,11 @@
 <template>
   <div :class="className">
     <template v-if="type === 'text'">
-      <div class="form__group__item">
+      <div
+       class="form__group__item"
+       v-if="$route.meta?.isForm"
+       >
         <input
-          v-if="$route.meta?.isForm"
           v-model="inputval"
           :id="nametext"
           :type="inputtype"
@@ -19,9 +21,11 @@
       </div>
     </template>
     <template v-else>
-      <div class="form__group__item">
+      <div
+       class="form__group__item"
+       v-if="$route.meta?.isForm"
+      >
         <textarea
-          v-if="$route.meta?.isForm"
           class="form__group__item__wrap__textarea"
           @input="handleinput"
           @blur="handleBlur"
@@ -131,6 +135,11 @@ export default Vue.extend({
   align-content: center;
 
   &__wrap{
+    &__text{
+      font-size: 20px;
+      padding: 5px 0;
+      text-align: left;
+    }
     &__input{
       font-size: 20px;
       padding: 5px 0;

@@ -1,6 +1,9 @@
 <template>
-  <div class="form__confirm">
-    <h1>確認画面</h1>
+  <div class="form">
+    <div class="form__title">
+      <h1>確認画面</h1>
+    </div>
+    <hr>
     <SimulationForm 
       :data="formdata"
     />
@@ -30,3 +33,24 @@ export default Vue.extend({
 });
   
 </script>
+
+
+<style lang="scss" scoped>
+.form{
+  &__title{
+    text-align: center;
+    padding: 10px 30px;
+    h1 {
+      font-size: 30px;
+      font-weight: bold;
+      margin: 0 0 15px 0;
+      padding: 0;
+    }
+    p {
+      font-size: 18px;
+      margin: 0;
+      padding: 0;
+    }
+  }
+}
+</style>
