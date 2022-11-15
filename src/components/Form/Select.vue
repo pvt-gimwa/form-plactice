@@ -1,8 +1,10 @@
 <template>
   <div :class="className">
-    <div class="form__group__item">
+    <div
+     class="form__group__item"
+     v-if="$route.meta?.isForm"
+     >
       <select
-        v-if="$route.meta?.isForm"
         @change="handleChange"
         class="form__group__item__wrap__select"
         v-model="inputval"
@@ -24,7 +26,7 @@
     </div>
     <p
       v-if="$route.meta?.isConfirm === true"
-      class="form__group__item__wrap_text"
+      class="form__group__item__wrap__text"
     >
       {{inputval}}
     </p>
@@ -108,6 +110,11 @@ export default Vue.extend({
   justify-content: flex-start;
   align-content: center;
   &__wrap{
+    &__text{
+      font-size: 20px;
+      padding: 5px 0;
+      text-align: left;
+    }
     &__select{
       width: 100%;
       font-size: 20px;

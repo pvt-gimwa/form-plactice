@@ -14,7 +14,7 @@
           <option disabled selected value="">例）1990</option>
           <template v-for=" item in selectoption.data" >
             <option :value="item">
-              {{item}}年
+              {{item}}
             </option>
           </template>
         </select>
@@ -171,7 +171,7 @@ export default Vue.extend({
 
       month.map(x => {
         const option    = document.createElement("option")
-        option.text     = x+"月"
+        option.text     = x.toString()
         option.value    = x.toString()
         option.selected = false
         monthSelect?.appendChild(option)
@@ -216,7 +216,7 @@ export default Vue.extend({
 
       days.map(x => {
         const option    = document.createElement("option")
-        option.text     = x+"日"
+        option.text     = x.toString()
         option.value    = x.toString()
         option.selected = false
         daySelect?.appendChild(option)
@@ -246,7 +246,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-
 .form__group{
   display: flex;
   align-items: center;
@@ -263,6 +262,11 @@ export default Vue.extend({
         width: 100%;
         font-size: 20px;
         padding: 5px 0;
+      }
+      &__text{
+        font-size: 20px;
+        padding: 5px 0;
+        text-align: left;
       }
       &__input{
         &__error{ 

@@ -37,7 +37,6 @@
               ref="child"
               v-model="formdata[idx1].data[idx2].value"
             >
-              <template #unit:>万円</template>
             </InputVue>
             <SelectVue
               v-if="cell.type === 'select'"
@@ -52,7 +51,6 @@
               v-model="formdata[idx1].data[idx2].value"
             >
             </SelectVue>
-
             <DateVue
               v-if="cell.type === 'date'"
               :type="cell.type"
@@ -71,12 +69,14 @@
         </div>
       </div>
       <button 
+       class="simulation__form__button"
        v-if="$route.meta?.isForm === true"
-      >確定</button>
+      >確認画面へ</button>
       <button
+       class="simulation__form__button"
        v-if="$route.meta?.isConfirm === true"
        @click = "$router.push('/')"
-      >戻る</button>
+      >送信</button>
     </form>
   </div>
 </template>
@@ -206,7 +206,21 @@ h2{
   margin: 0 0 30px 0;
 }
 
-.simulation__form__group{
+.simulation__form{
+ &__button{
+  background-color: #000;
+  color: #FFF;
+  padding: 20px 40px;
+  font-size: 25px;
+  margin: 30px auto 0;
+  min-width: 260px;
+  border-radius: 50px;
+  font-weight: bold; 
+  &:hover{
+    opacity: .75;
+  }
+ }
+ &__group{
   background-color: #fff;
   padding: 30px;
   margin: 30px auto;
@@ -263,6 +277,7 @@ h2{
       }
     }
   }
+ }
 }
 
 </style>

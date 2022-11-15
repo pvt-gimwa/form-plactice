@@ -1,6 +1,6 @@
 <template>
-  <div class="form__input">
-    <div class="form__input__title">
+  <div class="form">
+    <div class="form__title">
       <h1>融資可能額シミュレーション</h1>
       <p>お客様のご属性情報をもとに、フルローンで融資可能額を試算します</p>
     </div>
@@ -37,7 +37,7 @@ import SimulationForm from '@/components/Form/SimulationForm.vue'; // @ is an al
 
 
 <style lang="scss" scoped>
-.form__input{
+.form{
   &__title{
     text-align: left;
     padding: 10px 30px;
