@@ -19,7 +19,8 @@ const routes: Array<RouteConfig> = [
         props: true, // propsを追加
         meta: {
           isForm: true,
-          isConfirm: false
+          isConfirm: false,
+          isCompleted: false
         }
       },
       {
@@ -31,7 +32,9 @@ const routes: Array<RouteConfig> = [
         component: () => import(/* webpackChunkName: "about" */ '../views/ConfirmView.vue'),
         props: true, // propsを追加
         meta: {
-          isConfirm: true
+          isForm: false,
+          isConfirm: true,
+          isCompleted: false
         }
       },
       {
@@ -43,6 +46,8 @@ const routes: Array<RouteConfig> = [
         component: () => import(/* webpackChunkName: "about" */ '../views/CompletedView.vue'),
         props: true, // propsを追加
         meta: {
+          isForm: false,
+          isConfirm: false,
           isCompleted: true
         }
       }    

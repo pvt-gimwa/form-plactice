@@ -122,6 +122,9 @@ export default Vue.extend({
       })
 
     },
+    clear(){
+      this.$emit("input", "")
+    }
   },
 })
 </script>

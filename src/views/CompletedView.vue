@@ -3,8 +3,35 @@
     <div class="form__title">
       <h1>送信完了</h1>
     </div>
+    <SimulationForm 
+      :data="formdata"
+    />
   </div>
 </template>
+
+<script lang="ts">
+
+import Vue from 'vue';
+import SimulationForm from '@/components/Form/SimulationForm.vue'; // @ is an alias to /src
+
+export default Vue.extend({
+  name: 'CompletedView',
+  data(){
+    return{
+      data: this.formdata
+    }
+  },
+  props:{
+    formdata:{
+      required: true
+    }
+  },
+  components: {
+    SimulationForm,
+  },
+});
+  
+</script>
 
 
 <style lang="scss" scoped>
