@@ -3,7 +3,7 @@
 
     <div class="form__group">
       <div
-        v-if="$route.meta?.isForm"
+        v-if="formstate.isForm === true"
         class="form__group__item__wrap"
       >
         <select
@@ -23,7 +23,7 @@
       </div>
 
       <div
-        v-if="$route.meta?.isForm && (selectoption.mode === 'ym' || selectoption.mode == 'ymd')"
+        v-if="formstate.isForm === true && (selectoption.mode === 'ym' || selectoption.mode == 'ymd')"
         class="form__group__item__wrap"
       >
         <select
@@ -39,7 +39,7 @@
       </div>
 
       <div
-        v-if="$route.meta?.isForm && selectoption.mode == 'ymd'"
+        v-if="formstate.isForm && selectoption.mode == 'ymd'"
         class="form__group__item__wrap"
       >
         <select
@@ -59,7 +59,7 @@
       <p>{{item}}</p>
     </div>
     <p
-      v-if="$route.meta?.isConfirm === true"
+      v-if="formstate.isConfirm === true"
       class="form__group__item__wrap__text"
     >
       {{inputval}}
@@ -81,6 +81,7 @@ export default Vue.extend({
     const unitYear  = this.unit.split("-")[0] || ""
     const unitMonth = this.unit.split("-")[1] || ""
     const unitDay   = this.unit.split("-")[2] || ""
+
     return {
       datedate: {year: year, month: month, day: day},
       inputtype: this.type,
@@ -125,6 +126,10 @@ export default Vue.extend({
     validationProp:{
       type:Object,
       required: true
+    },
+    formstate:{
+      type: Object,
+      required: true
     }
   },
   methods: {
@@ -154,13 +159,13 @@ export default Vue.extend({
       }
  
       this.datedate.year    = target.value
-      const monthSelectWrap = target.parentElement?.nextSibling
+      const monthSelectWrap = target.parentElement?.nextElementSibling
       const monthSelect     = (<Element>monthSelectWrap).querySelector(".form__group__item__wrap__date-month") as HTMLSelectElement
       const month           = Array.from({length:12}, (v,k) => k).map(x => x + 1)
       const monthOptions    = monthSelect.querySelectorAll('option')
 
       if(this.option.mode === "ymd"){
-        const daySelectWrap   = target.parentElement?.nextSibling?.nextSibling
+        const daySelectWrap   = target.parentElement?.nextElementSibling?.nextElementSibling
         const daySelect       = (<Element>daySelectWrap).querySelector(".form__group__item__wrap__date-day") as HTMLSelectElement
         const dayOptions      = daySelect.querySelectorAll('option')
         dayOptions.length > 1 ? Array.from(dayOptions).forEach( (x)=> x.value !== "" ? x.remove() : x.selected = true ) : null
@@ -208,7 +213,7 @@ export default Vue.extend({
       const selectedMonth = new Date(`${this.datedate.year}-${this.datedate.month}-1`)
       const nextMonth     = new Date(selectedMonth.getFullYear(), selectedMonth.getMonth()+1, 1)
       const daysMax       = Math.round( ( nextMonth.valueOf() - selectedMonth.valueOf() ) / (1000 * 60 * 60 * 24) )
-      const daySelectWrap = target.parentElement?.nextSibling
+      const daySelectWrap = target.parentElement?.nextElementSibling
       const daySelect     = (<Element>daySelectWrap).querySelector(".form__group__item__wrap__date-day") as HTMLSelectElement
       const days          = Array.from({length:daysMax}, (v,k) => k).map(x => x + 1)
       const dayOptions    = daySelect.querySelectorAll('option')
@@ -265,6 +270,13 @@ export default Vue.extend({
         width: 100%;
         font-size: 20px;
         padding: 5px 0;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background: transparent;
+        border: none;
+        border-radius: 0;
+        outline: none;
       }
       &__text{
         font-size: 20px;

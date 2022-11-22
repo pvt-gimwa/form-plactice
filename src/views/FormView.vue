@@ -7,6 +7,8 @@
     <hr>
     <SimulationForm 
       :data="formdata"
+      :formstate="formstate"
+      :router="router"
     />
   </div>
 </template>
@@ -15,12 +17,20 @@
 
 import Vue from 'vue';
 import SimulationForm from '@/components/Form/SimulationForm.vue'; // @ is an alias to /src
+import router from '@/router';
 
   export default Vue.extend({
     name: 'FormView',
     data(){
       return{
-        data: this.formdata
+        data: this.formdata,
+        meta: this.$route.meta,
+        router: this.$router,
+        formstate: {
+          isCompleted: false,​
+          isConfirm: false,
+  ​        isForm: true
+        }
       }
     },
     props:{

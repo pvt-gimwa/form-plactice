@@ -5,6 +5,8 @@
     </div>
     <SimulationForm 
       :data="formdata"
+      :formstate="formstate"
+      :router="router"
     />
   </div>
 </template>
@@ -18,7 +20,14 @@ export default Vue.extend({
   name: 'CompletedView',
   data(){
     return{
-      data: this.formdata
+      data: this.formdata,
+      meta: this.$route.meta,
+      router: this.$router,
+      formstate: {
+        isCompleted: true,​
+        isConfirm: false,
+​        isForm: false
+      }
     }
   },
   props:{

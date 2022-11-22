@@ -2,7 +2,7 @@
   <div :class="className">
     <div
      class="form__group__item"
-     v-if="$route.meta?.isForm"
+     v-if="state.isForm === true"
      >
       <select
         @change="handleChange"
@@ -25,7 +25,7 @@
       <p>{{item}}</p>
     </div>
     <p
-      v-if="$route.meta?.isConfirm === true"
+      v-if="state.isConfirm === true"
       class="form__group__item__wrap__text"
     >
       {{inputval}}
@@ -48,7 +48,8 @@ export default Vue.extend({
       validatior: this.validationProp,
       labeltext : this.label,
       nametext : this.name,
-      formoption : this.option
+      formoption : this.option,
+      state : this.formstate
     }
   },
   props:{
@@ -78,6 +79,10 @@ export default Vue.extend({
     },
     validationProp:{
       type:Object,
+      required: true
+    },
+    formstate:{
+      type: Object,
       required: true
     }
   },
@@ -122,6 +127,13 @@ export default Vue.extend({
       width: 100%;
       font-size: 20px;
       padding: 5px 0;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      outline: none;
     }
     &__input{
       &__error{ 
