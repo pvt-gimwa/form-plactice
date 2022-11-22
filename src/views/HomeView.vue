@@ -13,7 +13,7 @@ export default Vue.extend({
   name: 'HomeView',
   data(){
     return{
-      formdata: formdata
+      formdata: formdata,
     }
   },
 });

@@ -6,6 +6,8 @@
     <hr>
     <SimulationForm 
       :data="formdata"
+      :formstate="formstate"
+      :router="router"
     />
   </div>
 </template>
@@ -19,7 +21,14 @@ export default Vue.extend({
   name: 'ConfirmView',
   data(){
     return{
-      data: this.formdata
+      data: this.formdata,
+      meta: this.$route.meta,
+      router: this.$router,
+      formstate: {
+        isCompleted: false,​
+        isConfirm: true,
+​        isForm: false
+      }
     }
   },
   props:{

@@ -1,7 +1,7 @@
 <template>
   <div
    class="simulation"
-   v-show="$route.meta?.isCompleted === false"
+   v-show="formstate.isCompleted === false"
   >
     <form class="simulation__form" name="simulation__form" @submit.prevent="handleSubmit">
       <div v-for="(item, idx1) in formdata" class="simulation__form__group">
@@ -37,6 +37,7 @@
               :label="cell.label"
               :option="cell.option"
               :unit="cell.unit"
+              :formstate="simulationformstate"
               ref="child"
               v-model="formdata[idx1].data[idx2].value"
             >
@@ -50,6 +51,7 @@
               :label="cell.label"
               :option="cell.option"
               :unit="cell.unit"
+              :formstate="simulationformstate"
               ref="child"
               v-model="formdata[idx1].data[idx2].value"
             >
@@ -63,6 +65,7 @@
               :label="cell.label"
               :option="cell.option"
               :unit="cell.unit"
+              :formstate="simulationformstate"
               ref="child"
               v-model="formdata[idx1].data[idx2].value"
             />
@@ -73,12 +76,13 @@
       </div>
       <button 
        class="simulation__form__button"
-       v-if="$route.meta?.isForm === true"
+       v-if="formstate.isForm === true"
        @click="checkvalidate"
       >確認画面へ</button>
       <button
        class="simulation__form__button"
-       v-if="$route.meta?.isConfirm === true"
+       v-if="formstate.isConfirm === true"
+       @click="handleSubmit"
       >送信</button>
     </form>
   </div>
@@ -86,9 +90,9 @@
 
 <script lang="ts">
 import Vue,{PropType} from 'vue'
-import InputVue from '@/components/Form/Input.vue'; // @ is an alias to /src
-import SelectVue from '@/components/Form/Select.vue'; // @ is an alias to /src
-import DateVue from './Date.vue';
+import InputVue from './Input.vue'
+import SelectVue from './Select.vue'
+import DateVue from './Date.vue'
 import checkValue from './valdator'
 import axios from 'axios'
 
@@ -138,31 +142,41 @@ export default Vue.extend({
   data(){
     return {
       formdata:this.data,
+      simulationformstate: this.formstate
     }
   },
   props:{
     data:{
       type: Array as unknown as PropType<FormDataType>,
       required: true
+    },
+    formstate:{
+      type: Object,
+      required: true
     }
   },
   mounted(){
 
-    if(this.$route.meta?.isConfirm === true){
+    if(this.formstate.isConfirm === true){
+
       const allErrorMsg: any[] = [];
       this.check(allErrorMsg)
+
       if(allErrorMsg.length > 0){
         this.$router.push({name: 'form'})
       }
-    }else if(this.$route.meta?.isCompleted === true ){
+
+    }else if(this.formstate.isCompleted === true ){
+
       this.clear()
+
     }
 
   },
   methods: {
     handleSubmit() {
 
-      if(this.$route.meta?.isConfirm === true){
+      if(this.formstate.isConfirm === true){
 
         const formdata = this.formdata
         const keys     = Object.keys(formdata)
@@ -179,9 +193,12 @@ export default Vue.extend({
 
         })
 
+        console.log("-----postdata-------")
         console.log(postdata)
+        console.log("--------------------")
 
         this.$router.push({name: 'completed'})
+
       }      
 
     }, 
@@ -192,7 +209,13 @@ export default Vue.extend({
       this.check(allErrorMsg)
 
       if(allErrorMsg.length === 0){
+
         this.$router.push({name: 'confirm'})
+
+      }else{
+
+        return false
+
       }
 
     },

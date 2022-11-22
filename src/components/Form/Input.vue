@@ -3,7 +3,7 @@
     <template v-if="type === 'text'">
       <div
        class="form__group__item"
-       v-if="$route.meta?.isForm"
+       v-if="formstate.isForm === true"
        >
         <input
           v-model="inputval"
@@ -23,7 +23,7 @@
     <template v-else>
       <div
        class="form__group__item"
-       v-if="$route.meta?.isForm"
+       v-if="formstate.isForm === true"
       >
         <textarea
           class="form__group__item__wrap__textarea"
@@ -36,7 +36,7 @@
       </div>
     </template>
     <p
-      v-if="$route.meta?.isConfirm === true"
+      v-if="formstate.isConfirm === true"
       class="form__group__item__wrap__text"
     >
       {{inputval}}
@@ -61,7 +61,7 @@ export default Vue.extend({
       labeltext : this.label,
       nametext : this.name,
       formoption : this.option,
-      inputunit : this.unit
+      inputunit : this.unit,
     }
   },
   props:{
@@ -95,19 +95,23 @@ export default Vue.extend({
     validationProp:{
       type:Object,
       required: true
+    },
+    formstate:{
+      type: Object,
+      required: true
     }
   },
   mounted(){
   },
   methods: {
-    log(item: any) {
-      console.log(item)
-    },
     handleinput(event: Event) {
+
       const target = event.target as HTMLInputElement
       this.$emit("input", target.value)
+
     },
     handleBlur(event: Event) {
+
       const target = event.target as HTMLInputElement
       const _thisVal = target.value
       const _thislabel= this.label
@@ -147,6 +151,14 @@ export default Vue.extend({
       font-size: 20px;
       padding: 5px 0;
       width: 100%;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      outline: none;
+
       &__error{ 
         p {
           font-size: 15px;    
