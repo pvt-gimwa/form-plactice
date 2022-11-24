@@ -293,6 +293,11 @@ h2{
       justify-items: space-around;
       align-items: flex-start;
       gap: 30px;
+      @media only screen and (max-width: 600px) {
+        gap: 0px;
+        align-items: normal;
+        flex-direction: column;
+      }
     }
   }
   &__item{

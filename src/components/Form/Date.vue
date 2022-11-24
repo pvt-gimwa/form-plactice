@@ -259,6 +259,10 @@ export default Vue.extend({
   align-items: center;
   justify-content: space-around;
   gap: 30px;
+  @media only screen and (max-width: 600px) {
+    align-items: normal;
+    flex-direction: column;
+  }
   &__item{
     &__wrap{
       width: 100%;
