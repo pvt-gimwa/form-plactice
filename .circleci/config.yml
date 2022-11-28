@@ -3,6 +3,16 @@ jobs:
   build:
     docker:
      - image: circleci/node:14
+    branches:
+      only:
+        - main
     steps:
-     - run: echo "Hello Circle Ci"
-     - run: npm -v
+      - checkout
+      - run: echo "Hello Circle ci"
+      - run: npm -v
+      - run:
+          name: Install
+          command: yarn install
+      - run:
+          name: Build
+          command: yarn build
