@@ -18,5 +18,5 @@ jobs:
           command: yarn build
       - run:
           name: deploy
-          command: curl -X POST https://api.vercel.com/v1/integrations/deploy/prj_PmAsmrHAu62qaKvcXnKCj0Wnvked/lo42XacxfR
+          command: curl -X POST $VERCEL_HOOK_URL
           
